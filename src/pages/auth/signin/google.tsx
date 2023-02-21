@@ -5,12 +5,10 @@ import { firebaseAuth } from '~/firebaseClient';
 import { LOCAL_STORAGE_SESSION_KEY } from '~/lib/session';
 
 async function doSignInWithGoogle() {
-  const provider = new GoogleAuthProvider();
-  await signInWithRedirect(firebaseAuth, provider);
-
   const result = await getRedirectResult(firebaseAuth);
   if (!result) {
-    throw new Error('no redirect result');
+    const provider = new GoogleAuthProvider();
+    return await signInWithRedirect(firebaseAuth, provider);
   }
   const user = result.user;
   const idToken = await user.getIdToken();
