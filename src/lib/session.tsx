@@ -1,13 +1,26 @@
-import firebase from "firebase/compat";
-import { createContext, useContext, useEffect, useState } from "react";
+import firebase from 'firebase/compat';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { Session } from '~/@types/auth';
 
 export const LOCAL_STORAGE_SESSION_KEY = 'authee-session';
 
-export interface Session {
-  address: string;
-  user: firebase.User;
-  idToken: string;
-}
+export const storeSession = (session: Session) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(session));
+};
+
+export const loadSession = (): Session | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  const storedSession = localStorage.getItem(LOCAL_STORAGE_SESSION_KEY);
+  if (!storedSession) {
+    return null;
+  }
+  return JSON.parse(storedSession) as Session;
+};
 
 const SessionContext = createContext<{ session: Session | null }>({
   session: null,
